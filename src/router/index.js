@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue"
 import pet from "../views/pet.vue"
+import create from "../components/petCreateForm.vue"
 import { getToken } from "@/utils/auth"
 import { Message } from 'element-ui'
 Vue.use(VueRouter);
@@ -29,6 +30,14 @@ const routes = [{
     component: pet,
     meta: {
       title: '宠物管理'
+    }
+  },
+  {
+    path: "/create",
+    name: 'create',
+    component: create,
+    meta: {
+      title: '新增宠物'
     }
   },
 ];
