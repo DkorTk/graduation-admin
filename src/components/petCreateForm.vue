@@ -119,9 +119,7 @@
                 @input="saveImg"
               />
             </span>
-            <span class="hint">
-              按住Ctrl可多选
-            </span>
+            <span class="hint"> 按住Ctrl可多选 </span>
           </div>
         </div>
       </el-form>
@@ -142,7 +140,7 @@ import { createPet } from "../api/pet";
 import { uploadImage } from "../api/upImage";
 import { catImage } from "../api/catImage";
 export default {
-  data() {
+  data () {
     return {
       dialogFormVisible: false,
       form: {
@@ -163,23 +161,23 @@ export default {
     };
   },
   methods: {
-    open() {
+    open () {
       console.log("执行到了这");
       this.dialogFormVisible = true;
     },
-    saveImg(e) {
+    saveImg (e) {
       if (this.form.animal == "dog") {
         console.log(e.target.files);
         this.wantPhotos.push(...Array.from(e.target.files));
         console.log(this.wantPhotos);
-      } else if  (this.form.animal == "cat") {
+      } else if (this.form.animal == "cat") {
         console.log(e.target.files);
         this.catPhotos.push(...Array.from(e.target.files));
         console.log("saveImage执行到cat");
       }
 
     },
-    resetPet() {
+    resetPet () {
       (this.form.name = ""),
         (this.form.species = ""),
         (this.form.animal = ""),
@@ -193,7 +191,7 @@ export default {
         (this.wantPhotos = []),
         (this.catPhotos = []);
     },
-    saveOrUpdate() {
+    saveOrUpdate () {
       if (this.form.name.length === 0) {
         this.$message.error("请输入宠物昵称！");
       } else if (this.form.species.length === 0) {
@@ -230,7 +228,7 @@ export default {
             console.log("photo", photo);
             uploadImage(photo);
           }
-        } else if  (this.form.animal == "cat"){
+        } else if (this.form.animal == "cat") {
           for (const photo of this.catPhotos) {
             console.log("photo执行到cat");
             catImage(photo);
