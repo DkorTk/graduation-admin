@@ -216,9 +216,9 @@ export default {
         // 添加信息
         createPet(this.form).then((result) => {
           this.dialogFormVisible = false;
-          this.$message.success("新增成功");
+          this.$message.success("添加成功");
           // 调用父组件监听函数
-          // this.$emit("onSaveSuccess");
+          this.$emit("onSaveSuccess");
           console.log(result);
         });
 

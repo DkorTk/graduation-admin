@@ -15,7 +15,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-input placeholder="请输入宠物编号"></el-input>
+          <el-input placeholder="请输入宠物昵称"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="upImage()"
@@ -29,11 +29,6 @@
 
       <div class="table">
         <el-table :data="tableData.data" border>
-          <el-table-column prop="petId" label="宠物编号">
-            <template slot-scope="scope">
-              {{ scope.row.beginTime }}
-            </template></el-table-column
-          >
           <el-table-column prop="name" label="宠物昵称">
             <template slot-scope="scope">
               {{ scope.row.name }}
@@ -82,12 +77,12 @@
               {{ scope.row.organization }}
             </template></el-table-column
           >
-          <!-- <el-table-column prop="state" label="状态">
+          <el-table-column prop="state" label="状态">
             <template slot-scope="scope">
-              <el-tag v-if="scope.row.state === 0">未领养</el-tag>
-              <el-tag v-if="scope.row.state === 1" type="info">已领养</el-tag>
+              <el-tag v-if="scope.row.state == 0">未领养</el-tag>
+              <el-tag v-if="scope.row.state == 1" type="info">已领养</el-tag>
             </template>
-          </el-table-column> -->
+          </el-table-column>
           <el-table-column prop="operation" label="修改信息">
             <template slot-scope="">
               <el-button type="success" size="mini" icon="el-icon-edit">
@@ -111,7 +106,10 @@
       </div>
     </div>
 
-    <petCreateForm ref="petCreateForm"></petCreateForm>
+    <petCreateForm
+      @onSaveSuccess="onSaveSuccess"
+      ref="petCreateForm"
+    ></petCreateForm>
     <upImage ref="upImage"></upImage>
   </div>
 </template>
@@ -120,7 +118,7 @@
 import Head from "../components/module";
 import petCreateForm from "../components/petCreateForm";
 import upImage from "../components/image";
-import { getPetList } from "../api/pet";
+import { getPetList, delPetInfo } from "../api/pet";
 
 export default {
   components: {
@@ -146,41 +144,6 @@ export default {
       upImage () {
         this.$refs.upImage.open();
       },
-
-      // tableData: [
-      //   {
-      //     petId: "1",
-      //     name: "开开",
-      //     sex: "公",
-      //     species: "牧羊犬",
-      //     state: 1,
-      //     operation: "修改信息",
-      //   },
-      //   {
-      //     petId: "1",
-      //     name: "开开",
-      //     sex: "公",
-      //     species: "牧羊犬",
-      //     state: 0,
-      //     operation: "修改信息",
-      //   },
-      //   {
-      //     petId: "1",
-      //     name: "开开",
-      //     sex: "公",
-      //     species: "牧羊犬",
-      //     state: 0,
-      //     operation: "修改信息",
-      //   },
-      //   {
-      //     petId: "1",
-      //     name: "开开",
-      //     sex: "公",
-      //     species: "牧羊犬",
-      //     state: 1,
-      //     operation: "修改信息",
-      //   },
-      // ],
     };
   },
   created () {
@@ -189,9 +152,9 @@ export default {
   methods: {
     fetchData () {
       //获取宠物列表
-      getPetList({ animal: this.form.variteyFlg }).then((result) => {
+      getPetList({ animal: this.form.variteyFlg, organ: '-1' }).then((result) => {
         this.$set(this.tableData, 'data', result.data.data)
-        console.log(this.tableData.data, '获取宠物列表')
+        // console.log(this.tableData.data, '获取宠物列表')
       });
     },
     //下拉选择事件
@@ -199,26 +162,30 @@ export default {
       this.fetchData()
     },
     //删除
-    // handle_DelPetInfo (id) {
-    //   debugger
-    //   delPetInfo({ animal: this.form.variteyFlg, id: id }).then((result) => {
-
-    //   })
-    // },
+    handle_DelPetInfo (id) {
+      delPetInfo({ animal: this.form.variteyFlg, id: id }).then(rest => {
+        if (rest.data.code == '200') {
+          this.fetchData()
+          this.$message.success("删除成功!");
+        }
+        else
+          this.$message.success("删除失败!");
+      })
+    },
+    onSaveSuccess () {
+      this.fetchData()
+    },
 
     //是否接种疫苗
     formatterVaccineFlg (row) {
-      debugger
       return row.vaccine == 0 ? "未接种" : "已接种"
     },
     //是否驱虫
     formatterExParasiteFlg (row) {
-      debugger
       return row.exParasite == 0 ? "未驱虫" : "已驱虫"
     },
     //是否绝育
     formatterSterilizationFlg (row) {
-      debugger
       return row.sterilization == 0 ? "未接种" : "已接种"
     },
 

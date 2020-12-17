@@ -7,9 +7,10 @@ export function createPet (data) {
     })
 }
 //获取宠物列表
-export function getPetList ({ animal }) {
+export function getPetList ({ animal, organ }) {
     return http.post("/getPetList", {
-        animal
+        animal,
+        organ
     })
 }
 //删除宠物信息
