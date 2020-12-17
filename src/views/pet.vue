@@ -4,17 +4,22 @@
     <div class="petTable">
       <el-form ref="form" :model="form" class="petForm">
         <el-form-item>
-          <el-select placeholder="请选择宠物类别">
-            <el-option label="猫" value="shanghai"></el-option>
-            <el-option label="狗" value="beijing"></el-option>
+          <el-select
+            @change="handel_animol"
+            v-model="form.variteyFlg"
+            placeholder="请选择宠物类别"
+          >
+            <el-option label="全部" value="-1"></el-option>
+            <el-option label="猫" value="cat"></el-option>
+            <el-option label="狗" value="dog"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-input placeholder="请输入宠物编号"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary"
-            @click="upImage()"><i class="el-icon-search"></i>查询</el-button
+          <el-button type="primary" @click="upImage()"
+            ><i class="el-icon-search"></i>查询</el-button
           >
           <el-button @click="addPet()"
             ><i class="el-icon-circle-plus-outline"></i>新增宠物</el-button
@@ -23,18 +28,66 @@
       </el-form>
 
       <div class="table">
-        <el-table :data="tableData" border>
-          <el-table-column prop="petId" label="宠物编号"> </el-table-column>
-          <el-table-column prop="name" label="宠物昵称"> </el-table-column>
-          <el-table-column prop="sex" label="性别"> </el-table-column>
-          <el-table-column prop="species" label="品种"> </el-table-column>
-
-          <el-table-column prop="state" label="状态">
+        <el-table :data="tableData.data" border>
+          <el-table-column prop="petId" label="宠物编号">
+            <template slot-scope="scope">
+              {{ scope.row.beginTime }}
+            </template></el-table-column
+          >
+          <el-table-column prop="name" label="宠物昵称">
+            <template slot-scope="scope">
+              {{ scope.row.name }}
+            </template></el-table-column
+          >
+          <el-table-column prop="age" label="年龄">
+            <template slot-scope="scope">
+              {{ scope.row.age }}
+            </template></el-table-column
+          >
+          <el-table-column prop="sex" label="性别">
+            <template slot-scope="scope">
+              {{ scope.row.sex == 1 ? "公" : "母" }}
+            </template></el-table-column
+          >
+          <el-table-column prop="weight" label="体重">
+            <template slot-scope="scope">
+              {{ scope.row.weight + "Kg" }}
+            </template></el-table-column
+          >
+          <el-table-column prop="species" label="品种">
+            <template slot-scope="scope">
+              {{ scope.row.species }}
+            </template></el-table-column
+          >
+          <el-table-column
+            prop="vaccine"
+            :formatter="formatterVaccineFlg"
+            label="是否接种疫苗"
+          >
+          </el-table-column>
+          <el-table-column
+            :formatter="formatterExParasiteFlg"
+            prop="exParasite"
+            label="是否驱虫"
+          >
+          </el-table-column>
+          <el-table-column
+            :formatter="formatterSterilizationFlg"
+            prop="sterilization"
+            label="是否绝育"
+          >
+          </el-table-column>
+          <el-table-column prop="organization" label="所属机构">
+            <template slot-scope="scope">
+              {{ scope.row.organization }}
+            </template></el-table-column
+          >
+          <!-- <el-table-column prop="state" label="状态">
             <template slot-scope="scope">
               <el-tag v-if="scope.row.state === 0">未领养</el-tag>
               <el-tag v-if="scope.row.state === 1" type="info">已领养</el-tag>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="operation" label="修改信息">
             <template slot-scope="">
               <el-button type="success" size="mini" icon="el-icon-edit">
@@ -42,9 +95,14 @@
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="operation" label="删除">
-            <template slot-scope="">
-              <el-button type="danger" size="mini" icon="el-icon-delete">
+          <el-table-column label="删除">
+            <template slot-scope="scope">
+              <el-button
+                type="danger"
+                size="mini"
+                icon="el-icon-delete"
+                @click="handle_DelPetInfo(scope.row.id)"
+              >
                 删除
               </el-button>
             </template>
@@ -53,7 +111,7 @@
       </div>
     </div>
 
-    <petCreateForm ref="petCreateForm" ></petCreateForm>
+    <petCreateForm ref="petCreateForm"></petCreateForm>
     <upImage ref="upImage"></upImage>
   </div>
 </template>
@@ -61,14 +119,16 @@
 <script>
 import Head from "../components/module";
 import petCreateForm from "../components/petCreateForm";
-import upImage from "../components/image"
+import upImage from "../components/image";
+import { getPetList } from "../api/pet";
+
 export default {
   components: {
     Head,
     petCreateForm,
     upImage
   },
-  data() {
+  data () {
     return {
       form: {
         petId: "",
@@ -77,49 +137,92 @@ export default {
         species: "",
         state: 1,
         operation: "",
+        variteyFlg: "-1"
       },
-      addPet() {
+      tableData: { data: [] },
+      addPet () {
         this.$refs.petCreateForm.open();
       },
-       upImage() {
+      upImage () {
         this.$refs.upImage.open();
       },
-      tableData: [
-        {
-          petId: "1",
-          name: "开开",
-          sex: "公",
-          species: "牧羊犬",
-          state: 1,
-          operation: "修改信息",
-        },
-        {
-          petId: "1",
-          name: "开开",
-          sex: "公",
-          species: "牧羊犬",
-          state: 0,
-          operation: "修改信息",
-        },
-        {
-          petId: "1",
-          name: "开开",
-          sex: "公",
-          species: "牧羊犬",
-          state: 0,
-          operation: "修改信息",
-        },
-        {
-          petId: "1",
-          name: "开开",
-          sex: "公",
-          species: "牧羊犬",
-          state: 1,
-          operation: "修改信息",
-        },
-      ],
+
+      // tableData: [
+      //   {
+      //     petId: "1",
+      //     name: "开开",
+      //     sex: "公",
+      //     species: "牧羊犬",
+      //     state: 1,
+      //     operation: "修改信息",
+      //   },
+      //   {
+      //     petId: "1",
+      //     name: "开开",
+      //     sex: "公",
+      //     species: "牧羊犬",
+      //     state: 0,
+      //     operation: "修改信息",
+      //   },
+      //   {
+      //     petId: "1",
+      //     name: "开开",
+      //     sex: "公",
+      //     species: "牧羊犬",
+      //     state: 0,
+      //     operation: "修改信息",
+      //   },
+      //   {
+      //     petId: "1",
+      //     name: "开开",
+      //     sex: "公",
+      //     species: "牧羊犬",
+      //     state: 1,
+      //     operation: "修改信息",
+      //   },
+      // ],
     };
   },
+  created () {
+    this.fetchData()
+  },
+  methods: {
+    fetchData () {
+      //获取宠物列表
+      getPetList({ animal: this.form.variteyFlg }).then((result) => {
+        this.$set(this.tableData, 'data', result.data.data)
+        console.log(this.tableData.data, '获取宠物列表')
+      });
+    },
+    //下拉选择事件
+    handel_animol () {
+      this.fetchData()
+    },
+    //删除
+    // handle_DelPetInfo (id) {
+    //   debugger
+    //   delPetInfo({ animal: this.form.variteyFlg, id: id }).then((result) => {
+
+    //   })
+    // },
+
+    //是否接种疫苗
+    formatterVaccineFlg (row) {
+      debugger
+      return row.vaccine == 0 ? "未接种" : "已接种"
+    },
+    //是否驱虫
+    formatterExParasiteFlg (row) {
+      debugger
+      return row.exParasite == 0 ? "未驱虫" : "已驱虫"
+    },
+    //是否绝育
+    formatterSterilizationFlg (row) {
+      debugger
+      return row.sterilization == 0 ? "未接种" : "已接种"
+    },
+
+  }
 };
 </script>
 
@@ -128,7 +231,7 @@ export default {
   display: flex;
   justify-content: center;
   padding: 20px;
- 
+
   margin: 20px 20px 0px;
 }
 .el-form-item {
@@ -136,7 +239,6 @@ export default {
 }
 
 .petTable {
-  
 }
 
 .petTable::after {

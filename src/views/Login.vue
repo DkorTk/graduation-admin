@@ -1,15 +1,11 @@
 <template>
   <div class="admin">
-            <div class="conContainer">
-        <div class="css-typing">
-          <p>宠物救助网，管理员登录</p>
-          
-        </div>
+    <div class="conContainer">
+      <div class="css-typing">
+        <p>宠物救助网，管理员登录</p>
       </div>
+    </div>
     <div class="login">
-
-
-
       <div class="loginInput">
         <div class="text">宠物领养系统后台</div>
         <el-form
@@ -52,9 +48,9 @@
 </template>
 
 <script>
-import {adminLogin} from "../api/login"
+import { adminLogin } from "../api/login"
 export default {
-  data() {
+  data () {
     return {
       loginForm: {
         email: "",
@@ -64,21 +60,21 @@ export default {
   },
 
   methods: {
-    login() {
+    login () {
       console.log(this.loginForm.email, this.loginForm.password);
       adminLogin({ email: this.loginForm.email, password: this.loginForm.password });
       // console.log(this.$qs.stringify(this.loginForm));
       // console.log(JSON.stringify(this.loginForm));
       //传递信息
-        this.$store
-          .dispatch("adminLogin",{ email: this.loginForm.email, password: this.loginForm.password })
-          .then(() => {
-            this.$router.push({ path: "/home" });
-            this.$message.success("登录成功!");
-          })
-          .catch(() => {
-            this.$message.error("登录失败");
-          });
+      this.$store
+        .dispatch("adminLogin", { email: this.loginForm.email, password: this.loginForm.password })
+        .then(() => {
+          this.$router.push({ path: "/home" });
+          this.$message.success("登录成功!");
+        })
+        .catch(() => {
+          this.$message.error("登录失败");
+        });
       // 清空表单
       //   let input = document.querySelectorAll(".demo-input-suffix input");
       //   input[0].value = "";
