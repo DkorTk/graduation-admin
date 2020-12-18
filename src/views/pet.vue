@@ -21,7 +21,7 @@
           <el-button type="primary" @click="upImage()"
             ><i class="el-icon-search"></i>查询</el-button
           >
-          <el-button @click="addPet()"
+          <el-button @click="addPet(true, '')"
             ><i class="el-icon-circle-plus-outline"></i>新增宠物</el-button
           >
         </el-form-item>
@@ -83,20 +83,26 @@
               <el-tag v-if="scope.row.state == 1" type="info">已领养</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="operation" label="修改信息">
-            <template slot-scope="">
-              <el-button type="success" size="mini" icon="el-icon-edit">
-                修改信息
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="删除">
+          <el-table-column
+            label="操作"
+            align="center"
+            width="250"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="scope">
               <el-button
+                icon="el-icon-edit"
+                type="success"
+                size="mini"
+                @click="addPet(false, scope.row)"
+              >
+                修改信息
+              </el-button>
+              <el-button
+                icon="el-icon-delete"
                 type="danger"
                 size="mini"
-                icon="el-icon-delete"
-                @click="handle_DelPetInfo(scope.row.id)"
+                @click="handle_DelPetInfo(scope.row)"
               >
                 删除
               </el-button>
@@ -106,10 +112,7 @@
       </div>
     </div>
 
-    <petCreateForm
-      @onSaveSuccess="onSaveSuccess"
-      ref="petCreateForm"
-    ></petCreateForm>
+    <petCreateForm @onSaveSuccess="onSaveSuccess" ref="petCreateForm" />
     <upImage ref="upImage"></upImage>
   </div>
 </template>
@@ -135,12 +138,12 @@ export default {
         species: "",
         state: 1,
         operation: "",
-        variteyFlg: "-1"
+        variteyFlg: "-1",
+        search: '',
+        isEdit: false
       },
       tableData: { data: [] },
-      addPet () {
-        this.$refs.petCreateForm.open();
-      },
+
       upImage () {
         this.$refs.upImage.open();
       },
@@ -161,9 +164,15 @@ export default {
     handel_animol () {
       this.fetchData()
     },
+    //添加修改
+    addPet (isEdit, info) {
+      this.$refs.petCreateForm.info = info
+      this.$refs.petCreateForm.isEdit = isEdit
+      this.$refs.petCreateForm.open()
+    },
     //删除
-    handle_DelPetInfo (id) {
-      delPetInfo({ animal: this.form.variteyFlg, id: id }).then(rest => {
+    handle_DelPetInfo (info) {
+      delPetInfo(info).then(rest => {
         if (rest.data.code == '200') {
           this.fetchData()
           this.$message.success("删除成功!");
@@ -186,7 +195,7 @@ export default {
     },
     //是否绝育
     formatterSterilizationFlg (row) {
-      return row.sterilization == 0 ? "未接种" : "已接种"
+      return row.sterilization == 0 ? "未绝育" : "已绝育"
     },
 
   }

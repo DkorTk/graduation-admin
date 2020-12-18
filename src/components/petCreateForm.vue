@@ -1,6 +1,9 @@
 <template>
   <div>
-    <el-dialog title="新增宠物" :visible.sync="dialogFormVisible">
+    <el-dialog
+      :title="isEdit == false ? '修改宠物信息' : '添加宠物信息'"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form :model="form">
         <div class="name">
           <el-form-item label="宠物昵称" :label-width="formLabelWidth">
@@ -136,7 +139,7 @@
 </template>
 
 <script>
-import { createPet } from "../api/pet";
+import { createPet, setPetInfo } from "../api/pet";
 import { uploadImage } from "../api/upImage";
 import { catImage } from "../api/catImage";
 export default {
@@ -158,11 +161,33 @@ export default {
       formLabelWidth: "80px",
       wantPhotos: [],
       catPhotos: [],
+      info: {},
+      isEdit: '',
+      animal: ''
     };
   },
+
   methods: {
     open () {
-      console.log("执行到了这");
+      // console.log("执行到了这");
+      if (this.isEdit) {
+        this.form = {
+          name: "",
+          species: "",
+          animal: "",
+          sex: "",
+          age: "",
+          weight: "",
+          vaccine: "",
+          exParasite: "",
+          sterilization: "",
+          organization: "",
+        }
+      }
+      else {
+        this.form = this.info
+      }
+
       this.dialogFormVisible = true;
     },
     saveImg (e) {
@@ -192,27 +217,11 @@ export default {
         (this.catPhotos = []);
     },
     saveOrUpdate () {
+      debugger
+      this.isEdit
       if (this.form.name.length === 0) {
         this.$message.error("请输入宠物昵称！");
-      } else if (this.form.species.length === 0) {
-        this.$message.error("请输入品种");
-      } else if (this.form.animal.length === 0) {
-        this.$message.error("请选择分类");
-      } else if (this.form.weight.length === 0) {
-        this.$message.error("请输入体重");
-      } else if (this.form.sex.length === 0) {
-        this.$message.error("请选择性别");
-      } else if (this.form.age.length === 0) {
-        this.$message.error("请选择年龄！");
-      } else if (this.form.vaccine.length === 0) {
-        this.$message.error("请选择疫苗情况");
-      } else if (this.form.exParasite.length === 0) {
-        this.$message.error("请选择驱虫情况");
-      } else if (this.form.sterilization.length === 0) {
-        this.$message.error("请选择绝育情况");
-      } else if (this.form.organization.length === 0) {
-        this.$message.error("请输入机构");
-      } else {
+      } else if (this.isEdit) {
         // 添加信息
         createPet(this.form).then((result) => {
           this.dialogFormVisible = false;
@@ -221,7 +230,15 @@ export default {
           this.$emit("onSaveSuccess");
           console.log(result);
         });
-
+      }
+      else {
+        //修改信息
+        setPetInfo(this.form).then((result) => {
+          this.dialogFormVisible = false;
+          this.$message.success("修改成功");
+          this.$emit("onSaveSuccess");
+          console.log(result);
+        })
         // 添加狗图片
         if (this.form.animal == "dog") {
           for (const photo of this.wantPhotos) {
@@ -235,6 +252,9 @@ export default {
           }
         }
       }
+    },
+    restWorkData () {
+      this.form = {}
     },
   },
 };
