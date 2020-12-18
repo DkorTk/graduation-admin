@@ -67,7 +67,7 @@
                 icon="el-icon-delete"
                 type="danger"
                 size="mini"
-                @click="handle_DelPetInfo(scope.row.examId)"
+                @click="handle_DelPetInfo(scope.row.id)"
               >
                 删除
               </el-button>
@@ -126,13 +126,24 @@ export default {
     },
     //删除
     handle_DelPetInfo (id) {
-      delOrgan({ id: id }).then(rest => {
-        if (rest.data.code == '200') {
-          this.fetchData()
-          this.$message.success("删除成功!");
-        }
-        else
-          this.$message.success("删除失败!");
+      this.$confirm('确认删除此机构？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delOrgan({ id: id }).then(rest => {
+          if (rest.data.code == '200') {
+            this.fetchData()
+            this.$message.success("删除成功!");
+          }
+          else
+            this.$message.success("删除失败!");
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消删除。'
+        })
       })
     },
     // 机构查询

@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     fetchData () {
-      this.listInfo = this.info
+      this.listInfo = JSON.parse(JSON.stringify(this.info))
     },
     // 提交
     handle_SaveButExam () {
@@ -95,7 +95,7 @@ export default {
           if (!_self.isEdit) {
             //添加机构信息
             addOrgan({ name: _self.listInfo.name, account: _self.listInfo.account, password: _self.listInfo.password }).then(rest => {
-              if (rest.data.data == 200) {
+              if (rest.data.code == 200) {
                 _self.callbackData('添加完成。')
               }
             })
@@ -103,7 +103,7 @@ export default {
           else {
             //编辑机构信息
             setOrgan({ name: _self.listInfo.name, account: _self.listInfo.account, password: _self.listInfo.password, id: _self.listInfo.id }).then(rest => {
-              if (rest.data.data == 200) {
+              if (rest.data.code == 200) {
                 _self.callbackData('修改完成。')
               }
             })
