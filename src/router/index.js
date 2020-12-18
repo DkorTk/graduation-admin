@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue"
 import pet from "../views/pet.vue"
 import organ from "../views/organ.vue"
+import user from "../views/user.vue"
 import create from "../components/petCreateForm.vue"
 import { getToken } from "@/utils/auth"
 import { Message } from 'element-ui'
@@ -48,7 +49,15 @@ const routes = [{
   meta: {
     title: '机构管理'
   }
-}
+},
+{
+  path: "/user",
+  name: 'user',
+  component: user,
+  meta: {
+    title: '用户管理'
+  }
+},
 ];
 
 const router = new VueRouter({

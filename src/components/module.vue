@@ -21,7 +21,7 @@
     <div class="first">
       <el-row :gutter="12">
         <el-col :span="8">
-          <el-card shadow="hover" @click.native="card1">
+          <el-card shadow="hover" @click.native="user">
             <i class="iconfont">&#xe68c;</i> 用户管理
           </el-card>
         </el-col>
@@ -79,8 +79,8 @@ export default {
     };
   },
   methods: {
-    card1 () {
-      console.log("我是卡片");
+    user () {
+      this.$router.push({ path: "user" });
     },
     pet () {
       this.$router.push({ path: "pet" });
