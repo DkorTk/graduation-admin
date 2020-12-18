@@ -3,43 +3,52 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue"
 import pet from "../views/pet.vue"
+import organ from "../views/organ.vue"
 import create from "../components/petCreateForm.vue"
 import { getToken } from "@/utils/auth"
 import { Message } from 'element-ui'
 Vue.use(VueRouter);
 
 const routes = [{
-    path: "/home",
-    name: "Home",
-    component: Home,
-    meta: {
-      title: '首页'
-    }
-  },
-  {
-    path: "/",
-    name: 'Login',
-    component: Login,
-    meta: {
-      title: '登录'
-    }
-  },
-  {
-    path: "/pet",
-    name: 'pet',
-    component: pet,
-    meta: {
-      title: '宠物管理'
-    }
-  },
-  {
-    path: "/create",
-    name: 'create',
-    component: create,
-    meta: {
-      title: '新增宠物'
-    }
-  },
+  path: "/home",
+  name: "Home",
+  component: Home,
+  meta: {
+    title: '首页'
+  }
+},
+{
+  path: "/",
+  name: 'Login',
+  component: Login,
+  meta: {
+    title: '登录'
+  }
+},
+{
+  path: "/pet",
+  name: 'pet',
+  component: pet,
+  meta: {
+    title: '宠物管理'
+  }
+},
+{
+  path: "/create",
+  name: 'create',
+  component: create,
+  meta: {
+    title: '新增宠物'
+  }
+},
+{
+  path: "/organ",
+  name: 'organ',
+  component: organ,
+  meta: {
+    title: '机构管理'
+  }
+}
 ];
 
 const router = new VueRouter({
@@ -54,23 +63,23 @@ router.beforeEach((to, form, next) => {
     console.log(to.meta.title)
     document.title = to.meta.title
   }
-    const hasToken = getToken()
-    console.log(hasToken);
-    //检测token
+  const hasToken = getToken()
+  console.log(hasToken);
+  //检测token
 
-    if(hasToken) {
-      if( to.path === '/' ) {
-        next({ path: '/home' })
-      } 
-    }else {
-      if( to.path !== '/' ) {
-        Message.error({
-          showClose: true,
-          message: '请登录后访问'
-        });
-        next({ path: '/' })
-      }
+  if (hasToken) {
+    if (to.path === '/') {
+      next({ path: '/home' })
     }
+  } else {
+    if (to.path !== '/') {
+      Message.error({
+        showClose: true,
+        message: '请登录后访问'
+      });
+      next({ path: '/' })
+    }
+  }
   //   if (hasToken) {
   //     if (to.path === '/login') {
   //       next({ path: '/' })

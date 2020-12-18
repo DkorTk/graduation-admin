@@ -26,7 +26,7 @@
           </el-card>
         </el-col>
         <el-col :span="8">
-          <el-card shadow="hover">
+          <el-card shadow="hover" @click.native="handel_Organ">
             <i class="iconfont">&#xe61f;</i> 机构管理
           </el-card>
         </el-col>
@@ -61,7 +61,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       adminPath: "",
       isCollapse: true,
@@ -79,16 +79,16 @@ export default {
     };
   },
   methods: {
-    card1() {
+    card1 () {
       console.log("我是卡片");
     },
-    pet() {
+    pet () {
       this.$router.push({ path: "pet" });
     },
-    toHome() {
+    toHome () {
       this.$router.push({ path: "/home" });
     },
-    logout() {
+    logout () {
       console.log("触发logout函数");
 
       this.$store
@@ -99,15 +99,19 @@ export default {
         })
         .catch(() => {
           this.$message.error("注销失败");
-         
+
         });
     },
-    handleOpen(key, keyPath) {
+    handleOpen (key, keyPath) {
       console.log(key, keyPath);
     },
-    handleClose(key, keyPath) {
+    handleClose (key, keyPath) {
       console.log(key, keyPath);
     },
+
+    handel_Organ () {
+      this.$router.push({ path: "/organ" });
+    }
   },
 };
 </script>
